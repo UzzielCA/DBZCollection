@@ -1,3 +1,25 @@
-<h1>
-  {{title}}
-</h1>
+<div *ngIf="afAuth.authState | async; let user else showLogin">
+    <h1>
+      {{title}}
+    </h1>
+    <img src="{{user.photoURL}}" alt="">
+    {{user.photoURL}}
+    {{user | json}}
+    <!--<ul>
+        <li *ngFor="let usuario of usuarios | async">
+            {{usuario.name}}
+        </li>
+    </ul>
+
+    <div>{{item.name}}</div>
+    <ul>
+        <li *ngFor="let ite of item | async">
+            {{ite | json}}
+        </li>
+    </ul>-->
+    <button (click)="logout()">Salir</button>
+</div>
+
+<ng-template #showLogin>
+    <button (click)="login()">Login con Google</button>
+</ng-template>
