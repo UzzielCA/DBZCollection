@@ -1,4 +1,35 @@
 <div *ngIf="afAuth.authState | async; let user else showLogin">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand">{{title}}</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+              <li>
+                  <a data-toggle="collapse" data-target="#navbar">
+                      <strong>{{user?.displayName}}</strong>
+                  </a>
+              </li>
+              <li><a routerLink="/gotcha" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Completado <span class="badge">{{completado | percent:'1.0-2'}}</span></a></li>
+              <li><a routerLink="/missing" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Faltantes <span class="badge">{{faltante}}</span></a></li>
+              <li><a routerLink="/repeated" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Repetidas <span class="badge">{{repetidas}}</span></a></li>
+              <li><a routerLink="/exchange" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Intercambio </a></li>
+              <li><a routerLink="/notifications" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Notificaciones <span class="badge" *ngIf="numNotificaciones > 0">{{numNotificaciones}}</span></a></li>
+              <li>
+                  <a (click)="logout()" class="btn-logout" data-toggle="collapse" data-target="#navbar">
+                      Salir <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+                  </a>
+              </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+    </nav>
+
     <h1>
       {{title}}
     </h1>
@@ -17,9 +48,17 @@
             {{ite | json}}
         </li>
     </ul>-->
-    <button (click)="logout()">Salir</button>
 </div>
 
 <ng-template #showLogin>
-    <button (click)="login()">Login con Google</button>
+    <div class="container">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="well">
+                <h2 class="text-center">Iniciar sesion</h2>
+                <button class="btn btn-primary btn-lg btn-block" (click)="login()">
+                    Login con Google
+                </button>
+            </div>
+        </div>
+    </div>
 </ng-template>
