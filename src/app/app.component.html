@@ -29,25 +29,9 @@
           </ul>
         </div><!--/.nav-collapse -->
     </nav>
-
-    <h1>
-      {{title}}
-    </h1>
-    <img src="{{user.photoURL}}" alt="">
-    {{user.photoURL}}
-    {{user | json}}
-    <!--<ul>
-        <li *ngFor="let usuario of usuarios | async">
-            {{usuario.name}}
-        </li>
-    </ul>
-
-    <div>{{item.name}}</div>
-    <ul>
-        <li *ngFor="let ite of item | async">
-            {{ite | json}}
-        </li>
-    </ul>-->
+    <div class="container">
+        <router-outlet></router-outlet>
+    </div>
 </div>
 
 <ng-template #showLogin>

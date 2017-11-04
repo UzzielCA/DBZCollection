@@ -1,7 +1,6 @@
 export class Carta {
-    number:string;
-    isGotcha:boolean;
-    repeated:number;
 
-    constructor(){}
+    constructor(public number:string,
+                public isGotcha:boolean,
+                public repeated:number){}
 }

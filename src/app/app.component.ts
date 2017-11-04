@@ -26,7 +26,7 @@ export interface ShirtId {
 export class AppComponent {
   title = 'Dragon Ball Universe';
   usuarios: Observable<Usuario[]>;
-
+  cards: Observable<any[]>;
   private itemCollection: AngularFirestoreCollection<Shirt>;
   item: Observable<ShirtId[]>;
 
@@ -71,8 +71,24 @@ export class AppComponent {
       userChanges.forEach(variable => {
           if (variable.length == 0) {
               userDB.add({id: auth.uid, name: auth.displayName});
+              this.initMyCards(auth);
           }
-          console.log('usuario', variable.length);
+      });
+  }
+
+  initMyCards(auth){
+      console.log('initMyCards');
+      const cardsCollection = this.db.collection<any>('Cartas');
+      const myCardsCollection = this.db.collection(auth.uid);
+
+      this.cards = cardsCollection.valueChanges();
+      this.cards.forEach(variable => {
+          variable.forEach(variable1 => {
+              let tarjetas = [];
+              variable1.cartas.forEach(variable2 => {
+                  myCardsCollection.add({number: variable2, isGotcha: false, repeated: 0});
+              });
+          });
       });
   }
 

@@ -7,15 +7,21 @@ import { AngularFirestoreModule } from "angularfire2/firestore";
 import { AngularFireAuthModule} from "angularfire2/auth";
 import { environment } from "../environments/environment";
 
+import { AppRoutingModule } from './app.routing';
+
+import { CardsComponent } from './cards/cards.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CardsComponent
   ],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AppRoutingModule
   ],
   bootstrap: [AppComponent]
 })

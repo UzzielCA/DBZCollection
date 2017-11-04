@@ -1,0 +1,6 @@
+<div class="card col-lg-2 col-md-2 col-sm-2 col-xs-3" *ngFor="let myCard of myCards | async">
+    <div [ngClass]='{missing: myCard.data.isGotcha === false}' (click)="action(myCard)">
+        <p class="text-center card-number">{{myCard.data.number}}</p>
+        <span class="repeated badge" *ngIf="myCard.data.repeated > 0">{{myCard.data.repeated}}</span>
+    </div>
+</div>
