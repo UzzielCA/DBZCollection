@@ -30,7 +30,8 @@ export class AppComponent {
   private itemCollection: AngularFirestoreCollection<Shirt>;
   item: Observable<ShirtId[]>;
 
-  completado: number;
+  completado: number = 0;
+  repetidas: number = 0;
   constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth) {
 
@@ -38,6 +39,7 @@ export class AppComponent {
         if (auth) {
             this.saveUSer(auth);
             this.getCompleted(auth);
+            this.getRepeated(auth);
         }
     })
 
@@ -86,6 +88,26 @@ export class AppComponent {
               });
           });
       });
+  }
+
+  getRepeated(auth) {
+      const repeatedCollection = this.db.collection<Carta>(auth.uid, (ref) => ref.where('repeated', '>', 0));
+      const itemRepeated = repeatedCollection.snapshotChanges()
+        .map((actions) => {
+            return actions.map((a) => {
+              const data = a.payload.doc.data() as Carta;
+              const id = a.payload.doc.id;
+              return {id, data};
+          })
+      });
+
+      itemRepeated.forEach(repetidas => {
+          this.repetidas = 0;
+          repetidas.forEach(variable => {
+              this.repetidas = this.repetidas + variable.data.repeated;
+          });
+      });
+
   }
 
   saveUSer(auth) {
