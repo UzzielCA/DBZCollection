@@ -16,11 +16,11 @@
                       <strong>{{user?.displayName}}</strong>
                   </a>
               </li>
-              <li><a routerLink="/gotcha" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Completado <span class="badge">{{completado | percent:'1.0-2'}}</span></a></li>
-              <li><a routerLink="/missing" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Faltantes <span class="badge">{{faltante}}</span></a></li>
-              <li><a routerLink="/repeated" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Repetidas <span class="badge">{{repetidas}}</span></a></li>
-              <li><a routerLink="/exchange" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Intercambio </a></li>
-              <li><a routerLink="/notifications" routerLinkActive="active" data-toggle="collapse" data-target="#navbar">Notificaciones <span class="badge" *ngIf="numNotificaciones > 0">{{numNotificaciones}}</span></a></li>
+              <li><a routerLink="/gotcha" routerLinkActive="active">Completado <span class="badge">{{completado | percent:'1.0-2'}}</span></a></li>
+              <li><a routerLink="/missing" routerLinkActive="active">Faltantes <span class="badge">{{faltante}}</span></a></li>
+              <li><a routerLink="/repeated" routerLinkActive="active">Repetidas <span class="badge">{{repetidas}}</span></a></li>
+              <li><a routerLink="/exchange" routerLinkActive="active">Intercambio </a></li>
+              <li><a routerLink="/notifications" routerLinkActive="active">Notificaciones <span class="badge" *ngIf="numNotificaciones > 0">{{numNotificaciones}}</span></a></li>
               <li>
                   <a (click)="logout()" class="btn-logout" data-toggle="collapse" data-target="#navbar">
                       Salir <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>

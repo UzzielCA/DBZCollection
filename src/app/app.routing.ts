@@ -4,7 +4,8 @@ import { RouterModule, Routes } from "@angular/router";
 import { CardsComponent } from "./cards/cards.component";
 
 const routes: Routes = [
-    { path: '', component: CardsComponent }
+    { path: '', component: CardsComponent },
+    { path: ':filter', component: CardsComponent}
 ];
 
 @NgModule({

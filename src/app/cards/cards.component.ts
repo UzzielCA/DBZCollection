@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from "@angular/router";
 import { AngularFireAuth } from "angularfire2/auth";
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from "angularfire2/firestore";
 
@@ -26,7 +27,9 @@ export class CardsComponent implements OnInit {
   myCards: Observable<any[]>;
   constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth,
-                public modal: Modal) {
+                public modal: Modal,
+                private route: ActivatedRoute
+            ) {
     this.afAuth.authState.subscribe((auth) => {
         if (auth) {
             const myCardsCollection = this.db.collection<Carta>(auth.uid, (ref) => {
@@ -46,6 +49,57 @@ export class CardsComponent implements OnInit {
   }
 
   ngOnInit() {
+      this.afAuth.authState.subscribe((auth) => {
+          if (auth) {
+              this.route.params.forEach((param) => {
+                if (param.filter == 'gotcha') {
+                    this.getGotcha(auth);
+                } else if (param.filter == 'missing') {
+                    this.getMissing(auth);
+                } else if (param.filter == 'repeated') {
+                    this.getRepeated(auth);
+                }
+              });
+          }
+      })
+  }
+
+  getGotcha(auth){
+      // TODO: Buascar como crear el indice
+      const completedCollection = this.db.collection<Carta>(auth.uid, (ref) => ref.where('isGotcha', '==', true).orderBy('number'));
+      this.myCards = completedCollection.snapshotChanges()
+        .map((actions) => {
+            return actions.map((a) => {
+              const data = a.payload.doc.data() as Carta;
+              const id = a.payload.doc.id;
+              return {id, data};
+          })
+      });
+  }
+
+  getMissing(auth){
+      const completedCollection = this.db.collection<Carta>(auth.uid, (ref) => ref.where('isGotcha', '==', false).orderBy('number'));
+      this.myCards = completedCollection.snapshotChanges()
+        .map((actions) => {
+            return actions.map((a) => {
+              const data = a.payload.doc.data() as Carta;
+              const id = a.payload.doc.id;
+              return {id, data};
+          })
+      });
+  }
+
+  getRepeated(auth){
+      // TODO: Buascar como crear el indice
+      const completedCollection = this.db.collection<Carta>(auth.uid, (ref) => ref.where('repeated', '>', 0).orderBy('repeated', 'desc').orderBy('number'));
+      this.myCards = completedCollection.snapshotChanges()
+        .map((actions) => {
+            return actions.map((a) => {
+              const data = a.payload.doc.data() as Carta;
+              const id = a.payload.doc.id;
+              return {id, data};
+          })
+      });
   }
 
   action(myCard) {
