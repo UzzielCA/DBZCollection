@@ -9,17 +9,24 @@ import "rxjs/add/operator/map";
 
 import { Carta } from "../Model/Carta";
 
+import { Overlay, overlayConfigFactory } from "angular2-modal";
+import { Modal, BSModalContext } from "angular2-modal/plugins/bootstrap";
+import { CardModalComponent } from "../card-modal/card-modal.component";
+
+
 @Component({
   selector: 'app-cards',
   templateUrl: './cards.component.html',
-  styleUrls: ['./cards.component.css']
+  styleUrls: ['./cards.component.css'],
+  providers: [Modal]
 })
 export class CardsComponent implements OnInit {
 
   cards: Observable<any[]>;
   myCards: Observable<any[]>;
   constructor(public db: AngularFirestore,
-                public afAuth: AngularFireAuth) {
+                public afAuth: AngularFireAuth,
+                public modal: Modal) {
     this.afAuth.authState.subscribe((auth) => {
         if (auth) {
             const myCardsCollection = this.db.collection<Carta>(auth.uid, (ref) => {
@@ -46,6 +53,7 @@ export class CardsComponent implements OnInit {
           if (auth) {
               if (myCard.data.isGotcha) {
                   // TODO: preguntar si se desea eliminar o guardar como repetida
+                  this.openModal(auth.uid, myCard);
               } else {
                   myCard.data.isGotcha = true;
                   console.log(myCard.data);
@@ -54,5 +62,9 @@ export class CardsComponent implements OnInit {
               }
           }
       })
+  }
+
+  openModal(uid, myCard){
+      return this.modal.open(CardModalComponent, overlayConfigFactory({user: uid, key: myCard.id, card: myCard.data}, BSModalContext));
   }
 }

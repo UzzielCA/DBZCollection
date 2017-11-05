@@ -10,19 +10,27 @@ import { environment } from "../environments/environment";
 import { AppRoutingModule } from './app.routing';
 
 import { CardsComponent } from './cards/cards.component';
+import { CardModalComponent } from './card-modal/card-modal.component';
+
+import { ModalModule } from "angular2-modal";
+import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
 
 @NgModule({
   declarations: [
     AppComponent,
-    CardsComponent
+    CardsComponent,
+    CardModalComponent
   ],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ModalModule.forRoot(),
+    BootstrapModalModule
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [CardModalComponent]
 })
 export class AppModule { }
