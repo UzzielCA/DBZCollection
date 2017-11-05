@@ -32,6 +32,7 @@ export class AppComponent {
 
   completado: number = 0;
   repetidas: number = 0;
+  faltante: number = 0;
   constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth) {
 
@@ -40,6 +41,7 @@ export class AppComponent {
             this.saveUSer(auth);
             this.getCompleted(auth);
             this.getRepeated(auth);
+            this.getMissing(auth);
         }
     })
 
@@ -108,6 +110,22 @@ export class AppComponent {
           });
       });
 
+  }
+
+  getMissing(auth) {
+      const missingCollection = this.db.collection<Carta>(auth.uid, (ref) => ref.where('isGotcha', '==', false));
+      const itemMissing = missingCollection.snapshotChanges()
+        .map((actions) => {
+            return actions.map((a) => {
+                const data = a.payload.doc.data() as Carta;
+                const id = a.payload.doc.id;
+                return {id, data};
+            })
+        });
+
+        itemMissing.forEach(missing => {
+            this.faltante = missing.length;
+        });
   }
 
   saveUSer(auth) {
