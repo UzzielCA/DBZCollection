@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFirestore, AngularFirestoreDocument } from "angularfire2/firestore";
 
 import { DialogRef, ModalComponent, CloseGuard } from "angular2-modal";
 import { BSModalContext} from "angular2-modal/plugins/bootstrap";
@@ -7,8 +8,8 @@ import { Carta } from "../Model/Carta";
 
 export class CustomModalContext extends BSModalContext {
     public user: string;
-    public card: Carta;
     public key: string;
+    public card: Carta;
 }
 
 @Component({
@@ -21,18 +22,37 @@ export class CardModalComponent implements CloseGuard, ModalComponent<CustomModa
   context: CustomModalContext;
   public wrongAnswer: boolean;
 
-  constructor(public dialog: DialogRef<CustomModalContext>) {
+  constructor(public dialog: DialogRef<CustomModalContext>,
+                public db: AngularFirestore) {
       this.context = dialog.context
       this.wrongAnswer = true;
       dialog.setCloseGuard(this);
   }
 
   saveCard(){
-      console.log('saveCard');
+      this.context.card.repeated = this.context.card.repeated + 1;
+      const myCardsDoc = this.db.doc<Carta>(this.context.user+'/'+this.context.key);
+      myCardsDoc.update(this.context.card);
+      this.wrongAnswer = false;
+      this.dialog.close();
   }
 
   deleteCard(){
-      console.log('deleteCard');
+      if (this.context.card.repeated > 0) {
+          let isRepeated = this.context.card.repeated - 1;
+          if (isRepeated >= 0) {
+              this.context.card.repeated = isRepeated;
+          } else {
+              this.context.card.repeated = isRepeated;
+              this.context.card.isGotcha = false;
+          }
+      } else {
+          this.context.card.isGotcha = false;
+      }
+      const myCardsDoc = this.db.doc<Carta>(this.context.user+'/'+this.context.key);
+      myCardsDoc.update(this.context.card);
+      this.wrongAnswer = false;
+      this.dialog.close();
   }
 
   closeModal(){

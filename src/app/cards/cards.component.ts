@@ -52,11 +52,9 @@ export class CardsComponent implements OnInit {
       this.afAuth.authState.subscribe((auth) => {
           if (auth) {
               if (myCard.data.isGotcha) {
-                  // TODO: preguntar si se desea eliminar o guardar como repetida
                   this.openModal(auth.uid, myCard);
               } else {
                   myCard.data.isGotcha = true;
-                  console.log(myCard.data);
                   const myCardsDoc = this.db.doc<Carta>(auth.uid+'/'+myCard.id);
                   myCardsDoc.update(myCard.data);
               }
