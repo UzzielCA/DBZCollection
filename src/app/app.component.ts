@@ -30,12 +30,14 @@ export class AppComponent {
   private itemCollection: AngularFirestoreCollection<Shirt>;
   item: Observable<ShirtId[]>;
 
+  completado: number;
   constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth) {
 
     this.afAuth.authState.subscribe((auth) => {
         if (auth) {
             this.saveUSer(auth);
+            this.getCompleted(auth);
         }
     })
 
@@ -46,7 +48,7 @@ export class AppComponent {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
       /*this.usuarios = db.collection('Usuarios').valueChanges();
 
-      this.itemCollection = db.collection<Shirt>('Usuarios', (ref) => ref.where('id', '==', '1234'));
+      this.itemCollection = db.collection<Shirt>('Usuarios', (ref) => ref.where('id', '==', 'fuAdkBOBR0NvCE19BZrR2FgAwTl1'));
       this.item = this.itemCollection.stateChanges(['added'])
         .map((actions) => {
             return actions.map((a) => {
@@ -65,6 +67,27 @@ export class AppComponent {
       });*/
   }
 
+  getCompleted(auth){
+      const completedCollection = this.db.collection<Carta>(auth.uid, (ref) => ref.where('isGotcha', '==', true));
+      const itemCompletado = completedCollection.snapshotChanges()
+        .map((actions) => {
+            return actions.map((a) => {
+              const data = a.payload.doc.data() as Carta;
+              const id = a.payload.doc.id;
+              return {id, data};
+          })
+      });
+
+      const cards = this.db.collection<any>('Cartas').valueChanges();
+      cards.forEach(variable => {
+          variable.forEach(variable1 => {
+              itemCompletado.forEach(variable => {
+                  this.completado = variable.length / variable1.cartas.length;
+              });
+          });
+      });
+  }
+
   saveUSer(auth) {
       const userDB = this.db.collection<Usuario>('Usuarios', (ref) => ref.where ('id', '==', auth.uid));
       const userChanges = userDB.valueChanges()
@@ -77,7 +100,6 @@ export class AppComponent {
   }
 
   initMyCards(auth){
-      console.log('initMyCards');
       const cardsCollection = this.db.collection<any>('Cartas');
       const myCardsCollection = this.db.collection(auth.uid);
 
